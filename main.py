@@ -1,11 +1,18 @@
 import pygame
 from characters.player import Player
+from actions.user_roll import UserRoll
 
 # set up pygame modules
 pygame.init()
 pygame.font.init()
 my_font = pygame.font.SysFont('Arial', 15)
 pygame.display.set_caption("Pygame")
+
+roll_num = []
+rolls = open("user_rolls", "r")
+for w in rolls:
+    roll_num.append(w.rstrip())
+rolls = roll_num[0]
 
 # set up variables for the display
 size = (1200, 600)
