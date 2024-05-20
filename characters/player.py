@@ -20,23 +20,6 @@ class Player:
        elif direction == "down":
            self.y += self.delta
        self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
+            
 
-    def jump(self):
-        mass = 1
-        velocity = 0.2
-        keys = pygame.key.get_pressed()
-        if not(self.jumping):
-            if keys[pygame.K_SPACE]:
-                self.jumping = True
-        if self.jumping:
-            Force = (1 / 2) * mass * (velocity ** 2)
-            self.y -= Force
-            velocity -= 1
-            if velocity < 0:
-                mass *= -1
-            if velocity == -5:
-                self.jumping = False
-                mass = 1
-                velocity = 5
-        self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
 

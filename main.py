@@ -1,6 +1,7 @@
 import pygame
 from characters.player import Player
 from actions.user_roll import UserRoll
+import time
 
 # set up pygame modules
 pygame.init()
@@ -23,6 +24,15 @@ player = Player(200, 200)
 run = True
 started = False
 
+jumping = False
+
+y_gravity = 0.5
+jump_height = 20
+jump_pause = 1 # second
+y_velocity = jump_height
+space_list = []
+jump_pause_elapsed = True
+
 # -------- Main Program Loop -----------
 while run:
     # --- Main event loop
@@ -37,6 +47,9 @@ while run:
 
     if space_pressed and not(started):
         started = True
+    elif space_pressed and started:
+        space_pressed = False
+        jumping = True
 
     if started:
         if up_pressed:
@@ -51,11 +64,22 @@ while run:
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
+
     screen.fill((0, 0, 0))
     if started:
         screen.blit(player.image, player.rect)
-        if space_pressed:
-            Player.jump(player)
+
+        if jumping: # JUMPING MECHANICS
+            player.y -= y_velocity
+            y_velocity -= y_gravity
+            if y_velocity < - jump_height:
+                jumping = False
+                y_velocity = jump_height
+            player.rect = pygame.Rect(player.x, player.y, player.image_size[0], player.image_size[1])
+            screen.blit(player.image, player.rect) # CHANGE TO JUMPING
+        else:
+            player.rect = pygame.Rect(player.x, player.y, player.image_size[0], player.image_size[1])
+            screen.blit(player.image, player.rect) # CHANGE TO STANDING
 
     print(player.x, player.y)
 
