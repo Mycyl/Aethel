@@ -27,17 +27,22 @@ started = False
 jumping = False
 
 y_gravity = 0.5
-jump_height = 20
+jump_height = 15
 jump_pause = 1 # second
 y_velocity = jump_height
 space_list = []
 jump_pause_elapsed = True
+jump_time_started = True
+clock = pygame.time.Clock()
 
 # -------- Main Program Loop -----------
 while run:
     # --- Main event loop
+    clock.tick(60)
 
     keys = pygame.key.get_pressed()
+    mouse_pos = pygame.mouse.get_pos() # CHANGE FRAME BASED ON THE ANGLE OF THE HAND
+    player_pos = (player.x, player.y)
 
     up_pressed = keys[pygame.K_w]
     left_pressed = keys[pygame.K_a]
@@ -52,8 +57,6 @@ while run:
         jumping = True
 
     if started:
-        if up_pressed:
-            player.move_direction("up")
         if left_pressed:
             player.move_direction("left")
         if right_pressed:
@@ -80,9 +83,9 @@ while run:
         else:
             player.rect = pygame.Rect(player.x, player.y, player.image_size[0], player.image_size[1])
             screen.blit(player.image, player.rect) # CHANGE TO STANDING
+            jump_time_started = False
 
-    print(player.x, player.y)
-
+    print(mouse_pos)
     pygame.display.update()
 
 # Once we have exited the main program loop we can stop the game engine:

@@ -7,7 +7,7 @@ class Player:
         self.image = pygame.image.load("images/Initial_Character_Sprite.png")
         self.image_size = self.image.get_size()
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
-        self.delta = .25
+        self.delta = 5
         self.jumping = False
 
     def move_direction(self, direction):
