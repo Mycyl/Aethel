@@ -19,13 +19,14 @@ rolls = roll_num[0]
 # set up variables for the display
 size = (1200, 600)
 screen = pygame.display.set_mode(size)
-player = Player(200, 200)
+player = Player(200, 400)
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
 started = False
 theta = 0
 theta_display = my_font.render(f"{theta}°", True, (255, 255, 255))
+cardinal_direction_display = my_font.render(f"{player.cardinal_direction_pointing}", True, (255, 255, 255))
 
 jumping = False
 
@@ -41,15 +42,15 @@ clock = pygame.time.Clock()
 # -------- Main Program Loop -----------
 while run:
     # --- Main event loop
-    clock.tick(60)
+    clock.tick(100)
 
     keys = pygame.key.get_pressed()
     angle_pointed = round(Player.theta(player))
     theta_display = my_font.render(f"{angle_pointed}°", True, (255, 255, 255))
 
     up_pressed = keys[pygame.K_w]
-    left_pressed = keys[pygame.K_a]
     down_pressed = keys[pygame.K_s]
+    left_pressed = keys[pygame.K_a]
     right_pressed = keys[pygame.K_d]
     space_pressed = keys[pygame.K_SPACE]
 
@@ -62,10 +63,10 @@ while run:
     if started:
         if left_pressed:
             player.move_direction("left")
-        if right_pressed:
+        elif right_pressed:
             player.move_direction("right")
-        if down_pressed:
-            player.move_direction("down")
+        elif down_pressed:
+            print() # REPLACE WITH CROUCH FRAME, maybe make a list of booleans that is sliced from -2 and when it changes from true to false play the getting up animation
 
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
@@ -73,8 +74,13 @@ while run:
 
     screen.fill((0, 0, 0))
     if started:
+
+        cardinal_direction_display = my_font.render(f"{player.cardinal_direction_pointing}", True, (255, 255, 255))
+        player.get_dir(angle_pointed)
+
         screen.blit(player.image, player.rect)
         screen.blit(theta_display, (20, 20))
+        screen.blit(cardinal_direction_display, (60 , 20))
         if jumping: # JUMPING MECHANICS
             player.y -= y_velocity
             y_velocity -= y_gravity
