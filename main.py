@@ -2,6 +2,7 @@ import pygame
 from characters.player import Player
 from actions.user_roll import UserRoll
 import time
+import math
 
 # set up pygame modules
 pygame.init()
@@ -23,6 +24,8 @@ player = Player(200, 200)
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
 started = False
+theta = 0
+theta_display = my_font.render(f"{theta}°", True, (255, 255, 255))
 
 jumping = False
 
@@ -41,8 +44,8 @@ while run:
     clock.tick(60)
 
     keys = pygame.key.get_pressed()
-    mouse_pos = pygame.mouse.get_pos() # CHANGE FRAME BASED ON THE ANGLE OF THE HAND
-    player_pos = (player.x, player.y)
+    angle_pointed = round(Player.theta(player))
+    theta_display = my_font.render(f"{angle_pointed}°", True, (255, 255, 255))
 
     up_pressed = keys[pygame.K_w]
     left_pressed = keys[pygame.K_a]
@@ -71,7 +74,7 @@ while run:
     screen.fill((0, 0, 0))
     if started:
         screen.blit(player.image, player.rect)
-
+        screen.blit(theta_display, (20, 20))
         if jumping: # JUMPING MECHANICS
             player.y -= y_velocity
             y_velocity -= y_gravity
@@ -85,7 +88,6 @@ while run:
             screen.blit(player.image, player.rect) # CHANGE TO STANDING
             jump_time_started = False
 
-    print(mouse_pos)
     pygame.display.update()
 
 # Once we have exited the main program loop we can stop the game engine:
