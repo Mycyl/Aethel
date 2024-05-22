@@ -11,6 +11,7 @@ class Player:
         self.delta = 5
         self.jumping = False
         self.cardinal_direction_pointing = "N"
+        self.normalized_angle = 90
 
     def move_direction(self, direction):
        if direction == "right":
@@ -40,17 +41,15 @@ class Player:
                 return 180
             return angle
         return 180 + angle 
-        
-    def get_dir(self, angle_pointed):
-        if angle_pointed <= 36 or angle_pointed > 270:
-            self.cardinal_direction_pointing = "E" # TOUCH UP ON THIS
-        elif angle_pointed > 36 and angle_pointed <= 72:
-            self.cardinal_direction_pointing = "NE"
-        elif angle_pointed > 72 and angle_pointed <= 108:
-            self.cardinal_direction_pointing = "N"
-        elif angle_pointed > 108 and angle_pointed <= 144:
-            self.cardinal_direction_pointing = "NW"
-        elif angle_pointed > 144 and angle_pointed <= 270:
-            self.cardinal_direction_pointing = "W"
+    
+
+    def normalize_angle(self, angle_pointed):
+        angles = [[0, 36], [36, 72], [72, 108], [108, 144], [144, 180], [180, 216], [216, 252], [252, 288], [288, 324], [324, 360]]
+        cardinal_directions = ["E", "NE", "N", "NW", "W", "W", "SW", "S", "SE", "E"]
+        for i in range(len(angles)):
+            if angle_pointed > angles[i][0] and angle_pointed <= angles[i][1]:
+                self.cardinal_direction_pointing = cardinal_directions[i]
+        normalized_angles = [0, 45, 90, 135, 180, 180, 225, 270, 315, 0]
+        self.normalized_angle = normalized_angles[cardinal_directions.index(self.cardinal_direction_pointing)]
 
 

@@ -75,8 +75,8 @@ while run:
     screen.fill((0, 0, 0))
     if started:
 
-        cardinal_direction_display = my_font.render(f"{player.cardinal_direction_pointing}", True, (255, 255, 255))
-        player.get_dir(angle_pointed)
+        cardinal_direction_display = my_font.render(f"NA: {player.normalized_angle}°", True, (255, 255, 255))
+        player.normalize_angle(angle_pointed)
 
         screen.blit(player.image, player.rect)
         screen.blit(theta_display, (20, 20))
