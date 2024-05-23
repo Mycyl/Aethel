@@ -3,6 +3,7 @@ from characters.player import Player
 from actions.user_roll import UserRoll
 import time
 import math
+from projectiles.bullet import Bullet
 
 # set up pygame modules
 pygame.init()
@@ -38,6 +39,10 @@ space_list = []
 jump_pause_elapsed = True
 jump_time_started = True
 clock = pygame.time.Clock()
+player_coords = (0,0)
+theta = 0
+bullet = Bullet(player_coords, theta)
+shooting = False
 
 # -------- Main Program Loop -----------
 while run:
@@ -48,7 +53,6 @@ while run:
     angle_pointed = round(Player.theta(player))
     theta_display = my_font.render(f"{angle_pointed}°", True, (255, 255, 255))
 
-    up_pressed = keys[pygame.K_w]
     down_pressed = keys[pygame.K_s]
     left_pressed = keys[pygame.K_a]
     right_pressed = keys[pygame.K_d]
@@ -69,12 +73,22 @@ while run:
             print() # REPLACE WITH CROUCH FRAME, maybe make a list of booleans that is sliced from -2 and when it changes from true to false play the getting up animation
 
     for event in pygame.event.get():  # User did something
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
+            shooting = True
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            shooting = False
+
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
 
     screen.fill((0, 0, 0))
     if started:
-
+        if shooting:
+            bullet = Bullet((player.x, player.y), player.normalized_angle)
+            Bullet.calc_landing_coords(bullet)
+            print(bullet.bullet_landing_coord)
+            
         cardinal_direction_display = my_font.render(f"NA: {player.normalized_angle}°", True, (255, 255, 255))
         player.normalize_angle(angle_pointed)
 
@@ -93,6 +107,8 @@ while run:
             player.rect = pygame.Rect(player.x, player.y, player.image_size[0], player.image_size[1])
             screen.blit(player.image, player.rect) # CHANGE TO STANDING
             jump_time_started = False
+            if down_pressed:
+                screen.blit(player.image, player.rect) # CHANGE TO CROUCHING
 
     pygame.display.update()
 
