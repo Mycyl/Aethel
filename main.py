@@ -1,6 +1,5 @@
 import pygame
 from characters.player import Player
-from actions.user_roll import UserRoll
 import time
 import math
 from projectiles.bullet import Bullet
@@ -49,6 +48,8 @@ while run:
     # --- Main event loop
     clock.tick(100)
 
+    
+
     keys = pygame.key.get_pressed()
     angle_pointed = round(Player.theta(player))
     theta_display = my_font.render(f"{angle_pointed}°", True, (255, 255, 255))
@@ -88,13 +89,14 @@ while run:
             bullet = Bullet((player.x, player.y), player.normalized_angle)
             Bullet.calc_landing_coords(bullet)
             print(bullet.bullet_landing_coord)
-            
+
         cardinal_direction_display = my_font.render(f"NA: {player.normalized_angle}°", True, (255, 255, 255))
         player.normalize_angle(angle_pointed)
 
         screen.blit(player.image, player.rect)
         screen.blit(theta_display, (20, 20))
         screen.blit(cardinal_direction_display, (60 , 20))
+        
         if jumping: # JUMPING MECHANICS
             player.y -= y_velocity
             y_velocity -= y_gravity
