@@ -57,6 +57,7 @@ while run:
     angle_pointed = round(Player.theta(player))
     theta_display = my_font.render(f"{angle_pointed}°", True, (255, 255, 255))
 
+    f_pressed = keys[pygame.K_f]
     down_pressed = keys[pygame.K_s]
     left_pressed = keys[pygame.K_a]
     right_pressed = keys[pygame.K_d]
@@ -74,7 +75,7 @@ while run:
         elif right_pressed:
             player.move_direction("right")
         elif down_pressed:
-            print() # REPLACE WITH CROUCH FRAME, maybe make a list of booleans that is sliced from -2 and when it changes from true to false play the getting up animation
+            (print) # REPLACE WITH CROUCH FRAME, maybe make a list of booleans that is sliced from -2 and when it changes from true to false play the getting up animation
             crouching = True
 
     for event in pygame.event.get():  # User did something
@@ -90,8 +91,6 @@ while run:
     screen.fill((0, 0, 0))
     if started:
 
-        
-
         if shooting:
             bullet = Bullet((player.x, player.y), player.image_size, player.normalized_angle)
             Bullet.calc_landing_coords(bullet)
@@ -101,7 +100,8 @@ while run:
             landing_coordinate = my_font.render(f"{bullet.bullet_landing_coord}", True, (255, 255, 255))
 
         cardinal_direction_display = my_font.render(f"NA: {player.normalized_angle}°", True, (255, 255, 255))
-        player.normalize_angle(angle_pointed)
+        if not(f_pressed): # Lock the direction, ONLY UPDATE THE FRAME WHEN MOVING
+            player.normalize_angle(angle_pointed)
 
         screen.blit(player.image, player.rect)
         screen.blit(theta_display, (20, 20))

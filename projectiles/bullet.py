@@ -13,7 +13,7 @@ class Bullet:
         self.image_size = self.image.get_size()
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
         self.delta = 5
-        self.hypotenuse = 200
+        self.hypotenuse = 400
         self.bullet_landing_coord = (0, 0) #UPDATE
         self.player_coords = player_coords
 
