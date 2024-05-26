@@ -40,8 +40,12 @@ jump_time_started = True
 clock = pygame.time.Clock()
 player_coords = (0,0)
 theta = 0
-bullet = Bullet(player_coords, theta)
+bullet = Bullet(player_coords, player.image_size, theta)
 shooting = False
+bullets = []
+landing_coord = None
+landing_coordinate = my_font.render(f"{landing_coord}", True, (255, 255, 255))
+crouching = False
 
 # -------- Main Program Loop -----------
 while run:
@@ -49,7 +53,6 @@ while run:
     clock.tick(100)
 
     
-
     keys = pygame.key.get_pressed()
     angle_pointed = round(Player.theta(player))
     theta_display = my_font.render(f"{angle_pointed}°", True, (255, 255, 255))
@@ -72,6 +75,7 @@ while run:
             player.move_direction("right")
         elif down_pressed:
             print() # REPLACE WITH CROUCH FRAME, maybe make a list of booleans that is sliced from -2 and when it changes from true to false play the getting up animation
+            crouching = True
 
     for event in pygame.event.get():  # User did something
 
@@ -85,10 +89,16 @@ while run:
 
     screen.fill((0, 0, 0))
     if started:
+
+        
+
         if shooting:
-            bullet = Bullet((player.x, player.y), player.normalized_angle)
+            bullet = Bullet((player.x, player.y), player.image_size, player.normalized_angle)
             Bullet.calc_landing_coords(bullet)
-            print(bullet.bullet_landing_coord)
+            screen.blit(bullet.image, pygame.Rect(bullet.bullet_landing_coord[0], bullet.bullet_landing_coord[1], bullet.image_size[0], bullet.image_size[1]))
+            for bullet in bullets:
+                print()
+            landing_coordinate = my_font.render(f"{bullet.bullet_landing_coord}", True, (255, 255, 255))
 
         cardinal_direction_display = my_font.render(f"NA: {player.normalized_angle}°", True, (255, 255, 255))
         player.normalize_angle(angle_pointed)
@@ -96,6 +106,7 @@ while run:
         screen.blit(player.image, player.rect)
         screen.blit(theta_display, (20, 20))
         screen.blit(cardinal_direction_display, (60 , 20))
+        screen.blit(landing_coordinate, (120, 20))
         
         if jumping: # JUMPING MECHANICS
             player.y -= y_velocity
