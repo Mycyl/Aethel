@@ -23,11 +23,11 @@ class Bullet:
     def calc_landing_coords(self): # self.bullet_landing_coord
 
         x_delta = self.hypotenuse*math.cos(self.theta * (math.pi/180)) - self.image_size[0]/2
-        y_delta = self.hypotenuse*math.sin(self.theta * (math.pi/180)) + self.image_size[1]/2
+        y_delta = -(self.hypotenuse*math.sin(self.theta * (math.pi/180)) + self.image_size[1]/2)
 
         player_center_x = self.player_coords[0] + self.player_image_size[0]/2
         player_center_y = self.player_coords[1] + self.player_image_size[1]/2
 
-        self.bullet_landing_coord = (round(player_center_x + x_delta), round(player_center_y - y_delta))
+        self.bullet_landing_coord = (round(player_center_x + x_delta), round(player_center_y + y_delta))
 
         # MAKE A BOOLEAN TO TELL IF THE BULLET HAS REACHED THE COORD

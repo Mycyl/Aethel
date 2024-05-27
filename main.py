@@ -3,6 +3,12 @@ from characters.player import Player
 import time
 import math
 from projectiles.bullet import Bullet
+from instructions.button_behavior.a_button import aButton
+from instructions.button_behavior.d_button import dButton
+from instructions.button_behavior.f_button import fButton
+from instructions.button_behavior.s_button import sButton
+from instructions.button_behavior.space_button import spaceButton
+
 
 # set up pygame modules
 pygame.init()
@@ -47,6 +53,12 @@ landing_coord = None
 landing_coordinate = my_font.render(f"{landing_coord}", True, (255, 255, 255))
 crouching = False
 
+a_instruction = aButton(10, screen.get_height()-25*4 - 30)
+d_instruction = dButton(10, screen.get_height()-25*3 - 30)
+f_instruction = fButton(10, screen.get_height()-25*2 - 30)
+s_instruction = sButton(10, screen.get_height()-25 - 30)
+space_instruction = spaceButton(10, screen.get_height() - 30) # LOWER OPACITY
+
 # -------- Main Program Loop -----------
 while run:
     # --- Main event loop
@@ -90,6 +102,12 @@ while run:
 
     screen.fill((0, 0, 0))
     if started:
+
+        screen.blit(a_instruction.image, a_instruction.rect)
+        screen.blit(d_instruction.image, d_instruction.rect)
+        screen.blit(f_instruction.image, f_instruction.rect)
+        screen.blit(s_instruction.image, s_instruction.rect)
+        screen.blit(space_instruction.image, space_instruction.rect)
 
         if shooting:
             bullet = Bullet((player.x, player.y), player.image_size, player.normalized_angle)
