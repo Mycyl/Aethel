@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 class Bullet:
 
@@ -11,10 +12,10 @@ class Bullet:
         self.image = pygame.image.load("images/fx/particles/bullets/bullet/InitialBlast.png")
         self.image_size = self.image.get_size()
         self.x = player_coords[0] + player_image_size[0]/2 - self.image_size[0]/2
-        self.y = player_coords[1] + player_image_size[1]/2 - self.image_size[1]/2
+        self.y = player_coords[1] + player_image_size[1]/2 - self.image_size[1]/2 # DEVIATE THESE A LITTLE
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
-        self.delta = 5
-        self.hypotenuse = 400
+        self.delta = 20
+        self.hypotenuse = 500
         self.bullet_landing_coord = (0, 0) #UPDATE
         self.player_coords = player_coords
 

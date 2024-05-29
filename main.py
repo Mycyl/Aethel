@@ -1,5 +1,6 @@
 import pygame
 from characters.player import Player
+from characters.enemy import Enemy
 import time
 import math
 from projectiles.bullet import Bullet
@@ -26,6 +27,7 @@ rolls = roll_num[0]
 size = (1200, 600)
 screen = pygame.display.set_mode(size)
 player = Player(200, 400)
+boss = Enemy(700, 100, 100000)
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
@@ -58,6 +60,8 @@ f_instruction = fButton(10, screen.get_height()-25*2 - 30)
 s_instruction = sButton(10, screen.get_height()-25 - 30)
 space_instruction = spaceButton(10, screen.get_height() - 30) # LOWER OPACITY
 
+phase_one, phase_two, phase_three = False, False, False
+
 bullets = []
 
 # -------- Main Program Loop -----------
@@ -88,7 +92,7 @@ while run:
         elif right_pressed:
             player.move_direction("right")
         elif down_pressed:
-            (print) # REPLACE WITH CROUCH FRAME, maybe make a list of booleans that is sliced from -2 and when it changes from true to false play the getting up animation
+                 # REPLACE WITH CROUCH FRAME, maybe make a list of booleans that is sliced from -2 and when it changes from true to false play the getting up animation
             crouching = True
 
     for event in pygame.event.get():  # User did something
@@ -105,12 +109,31 @@ while run:
     if started:
 
         for bullet in bullets:
+
+            collided = False 
+
+            if bullet.rect.colliderect(boss.rect) and not(collided):
+                # MAKE THE ENEMY LIGHT UP
+                if boss.hp > 0:
+                    boss.hp -= 10
+
+                if boss.hp >= (2/3)*boss.starting_hp:
+                    phase_one = True
+                elif boss.hp >= (1/3)*boss.starting_hp:
+                    phase_one = False
+                    phase_two = True
+                else:
+                    phase_one = False
+                    phase_two = False
+                    phase_three = True
+
+                collided = True
+
             Bullet.check_reached_coord(bullet)
             Bullet.calc_landing_coords(bullet)
-            if not(bullet.reached_coord):
+            if not(bullet.reached_coord) and not(collided):
                 Bullet.move_bullet(bullet)
-                print(bullet.adjacent, bullet.opposite)
-            else:
+            else:                    
                 bullet_removed = bullets.pop(bullets.index(bullet))
                  # NOT REMOVING THE OBJECT
 
@@ -119,11 +142,12 @@ while run:
         screen.blit(f_instruction.image, f_instruction.rect)
         screen.blit(s_instruction.image, s_instruction.rect)
         screen.blit(space_instruction.image, space_instruction.rect)
+        screen.blit(boss.image, boss.rect)
 
         if shooting:
             bullet = Bullet((player.x, player.y), player.image_size, player.normalized_angle)
             Bullet.calc_landing_coords(bullet)
-            if len(bullets) < 10:
+            if len(bullets) < 1:
                 bullets.append(Bullet((player.x, player.y), player.image_size, player.normalized_angle))
 
             landing_coordinate = my_font.render(f"{bullet.bullet_landing_coord}", True, (255, 255, 255))
