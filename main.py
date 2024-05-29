@@ -48,7 +48,6 @@ player_coords = (0,0)
 theta = 0
 bullet = Bullet(player_coords, player.image_size, theta)
 shooting = False
-bullets = []
 landing_coord = None
 landing_coordinate = my_font.render(f"{landing_coord}", True, (255, 255, 255))
 crouching = False
@@ -58,6 +57,8 @@ d_instruction = dButton(10, screen.get_height()-25*3 - 30)
 f_instruction = fButton(10, screen.get_height()-25*2 - 30)
 s_instruction = sButton(10, screen.get_height()-25 - 30)
 space_instruction = spaceButton(10, screen.get_height() - 30) # LOWER OPACITY
+
+bullets = []
 
 # -------- Main Program Loop -----------
 while run:
@@ -103,6 +104,16 @@ while run:
     screen.fill((0, 0, 0))
     if started:
 
+        for bullet in bullets:
+            Bullet.check_reached_coord(bullet)
+            Bullet.calc_landing_coords(bullet)
+            if not(bullet.reached_coord):
+                Bullet.move_bullet(bullet)
+                print(bullet.adjacent, bullet.opposite)
+            else:
+                bullet_removed = bullets.pop(bullets.index(bullet))
+                 # NOT REMOVING THE OBJECT
+
         screen.blit(a_instruction.image, a_instruction.rect)
         screen.blit(d_instruction.image, d_instruction.rect)
         screen.blit(f_instruction.image, f_instruction.rect)
@@ -112,9 +123,9 @@ while run:
         if shooting:
             bullet = Bullet((player.x, player.y), player.image_size, player.normalized_angle)
             Bullet.calc_landing_coords(bullet)
-            screen.blit(bullet.image, pygame.Rect(bullet.bullet_landing_coord[0], bullet.bullet_landing_coord[1], bullet.image_size[0], bullet.image_size[1]))
-            for bullet in bullets:
-                print()
+            if len(bullets) < 10:
+                bullets.append(Bullet((player.x, player.y), player.image_size, player.normalized_angle))
+
             landing_coordinate = my_font.render(f"{bullet.bullet_landing_coord}", True, (255, 255, 255))
 
         cardinal_direction_display = my_font.render(f"NA: {player.normalized_angle}°", True, (255, 255, 255))
@@ -125,6 +136,9 @@ while run:
         screen.blit(theta_display, (20, 20))
         screen.blit(cardinal_direction_display, (60 , 20))
         screen.blit(landing_coordinate, (120, 20))
+
+        for bullet in bullets:
+                screen.blit(bullet.image, bullet.rect)
         
         if jumping: # JUMPING MECHANICS
             player.y -= y_velocity
