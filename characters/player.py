@@ -2,7 +2,7 @@ import pygame
 import math
 
 class Player:
-    def __init__(self, x, y):
+    def __init__(self, x, y, hp):
         self.x = x
         self.y = y
         self.image = pygame.image.load("images/characters/player/Initial_Character_Sprite.png")
@@ -12,6 +12,7 @@ class Player:
         self.jumping = False
         self.cardinal_direction_pointing = "N"
         self.normalized_angle = 90
+        self.hp = hp
 
     def move_direction(self, direction):
        if direction == "right":

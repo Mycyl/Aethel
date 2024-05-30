@@ -26,7 +26,7 @@ rolls = roll_num[0]
 # set up variables for the display
 size = (1200, 600)
 screen = pygame.display.set_mode(size)
-player = Player(200, 400)
+player = Player(200, 400, 300)
 boss = Enemy(700, 100, 100000)
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
@@ -62,13 +62,20 @@ space_instruction = spaceButton(10, screen.get_height() - 30) # LOWER OPACITY
 
 phase_one, phase_two, phase_three = False, False, False
 
+timer_started = False
+
 bullets = []
+
+frames = 0
+player_collided = False
+start_time = 0
+
+timer_of_invincibility_player = 3
 
 # -------- Main Program Loop -----------
 while run:
     # --- Main event loop
     clock.tick(100)
-
     
     keys = pygame.key.get_pressed()
     angle_pointed = round(Player.theta(player))
@@ -108,11 +115,27 @@ while run:
     screen.fill((0, 0, 0))
     if started:
 
+        current_time = frames // 100
+
+        
+
+        if player.rect.colliderect(boss.rect) and not(player_collided):
+            if not(timer_started):
+                start_time = frames // 100
+                timer_started = True
+            
+            player.hp -= 100
+            player_collided = True
+
+        if current_time - start_time == timer_of_invincibility_player: # Time of invincibility for player is 3 seconds
+            timer_started = False
+            player_collided = False
+
         for bullet in bullets:
 
-            collided = False 
+            bullet_collided = False 
 
-            if bullet.rect.colliderect(boss.rect) and not(collided):
+            if bullet.rect.colliderect(boss.rect) and not(bullet_collided):
                 # MAKE THE ENEMY LIGHT UP
                 if boss.hp > 0:
                     boss.hp -= 10
@@ -127,11 +150,11 @@ while run:
                     phase_two = False
                     phase_three = True
 
-                collided = True
+                bullet_collided = True
 
             Bullet.check_reached_coord(bullet)
             Bullet.calc_landing_coords(bullet)
-            if not(bullet.reached_coord) and not(collided):
+            if not(bullet.reached_coord) and not(bullet_collided):
                 Bullet.move_bullet(bullet)
             else:                    
                 bullet_removed = bullets.pop(bullets.index(bullet))
@@ -179,6 +202,8 @@ while run:
             if down_pressed:
                 screen.blit(player.image, player.rect) # CHANGE TO CROUCHING
 
+    frames += 1
+    
     pygame.display.update()
 
 # Once we have exited the main program loop we can stop the game engine:
