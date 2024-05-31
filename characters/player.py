@@ -5,7 +5,8 @@ class Player:
     def __init__(self, x, y, hp):
         self.x = x
         self.y = y
-        self.image = pygame.image.load("images/characters/player/Initial_Character_Sprite.png")
+
+        self.image = pygame.image.load("images/characters/player/idle/InitialCharacterSprite.png")
         self.image_size = self.image.get_size()
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
         self.delta = 5
@@ -14,16 +15,25 @@ class Player:
         self.normalized_angle = 90
         self.hp = hp
 
+        self.crouching_image = pygame.image.load("images/characters/player/crouching/InitialCharacterSpriteCrouching.png")
+        self.crouching_image_size = self.crouching_image.get_size()
+        self.x_crouching = self.x
+        self.y_crouching = self.y + (self.image_size[1] - self.crouching_image_size[1])
+        self.rect_crouching = pygame.Rect(self.x_crouching, self.y_crouching, self.crouching_image_size[0], self.crouching_image_size[1])
+
     def move_direction(self, direction):
-       if direction == "right":
+        if direction == "right":
+           self.x_crouching += self.delta
            self.x += self.delta
-       elif direction == "left":
+        elif direction == "left":
+           self.x_crouching -= self.delta
            self.x -= self.delta
-       elif direction == "up":
+        elif direction == "up":
            self.y -= self.delta
-       elif direction == "down":
+        elif direction == "down":
            self.y += self.delta
-       self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
+        self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
+        self.rect_crouching = pygame.Rect(self.x_crouching, self.y_crouching, self.crouching_image_size[0], self.crouching_image_size[1])
 
     def theta(self):
         center_coords_player = (self.x + self.image_size[0]/2, self.y + self.image_size[1]/2)
@@ -52,5 +62,3 @@ class Player:
                 self.cardinal_direction_pointing = cardinal_directions[i]
         normalized_angles = [0, 45, 90, 135, 180, 180, 225, 270, 315, 0]
         self.normalized_angle = normalized_angles[cardinal_directions.index(self.cardinal_direction_pointing)]
-
-

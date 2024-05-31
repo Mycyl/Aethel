@@ -24,6 +24,9 @@ for w in rolls:
 rolls = roll_num[0]
 
 # set up variables for the display
+
+jumping = False
+
 size = (1200, 600)
 screen = pygame.display.set_mode(size)
 player = Player(200, 400, 300)
@@ -36,7 +39,7 @@ theta = 0
 theta_display = my_font.render(f"{theta}°", True, (255, 255, 255))
 cardinal_direction_display = my_font.render(f"{player.cardinal_direction_pointing}", True, (255, 255, 255))
 
-jumping = False
+
 
 y_gravity = 0.5
 jump_height = 15
@@ -63,6 +66,7 @@ space_instruction = spaceButton(10, screen.get_height() - 30) # LOWER OPACITY
 phase_one, phase_two, phase_three = False, False, False
 
 timer_started = False
+bullet_timer = 0
 
 bullets = []
 
@@ -154,9 +158,13 @@ while run:
 
             Bullet.check_reached_coord(bullet)
             Bullet.calc_landing_coords(bullet)
+
+            bullet_current_time = frames // 100
+
             if not(bullet.reached_coord) and not(bullet_collided):
                 Bullet.move_bullet(bullet)
-            else:                    
+            else:
+
                 bullet_removed = bullets.pop(bullets.index(bullet))
                  # NOT REMOVING THE OBJECT
 
@@ -168,9 +176,12 @@ while run:
         screen.blit(boss.image, boss.rect)
 
         if shooting:
+            bullet_current_time = frames // 100
             bullet = Bullet((player.x, player.y), player.image_size, player.normalized_angle)
             Bullet.calc_landing_coords(bullet)
-            if len(bullets) < 1:
+            if len(bullets) < 1: # CONFIGURATE BULLET SPACING
+                print(bullet_timer)
+                bullet_timer = frames // 100 # ONLY ADDING WHEN IT IS SHOT
                 bullets.append(Bullet((player.x, player.y), player.image_size, player.normalized_angle))
 
             landing_coordinate = my_font.render(f"{bullet.bullet_landing_coord}", True, (255, 255, 255))
@@ -197,10 +208,11 @@ while run:
             screen.blit(player.image, player.rect) # CHANGE TO JUMPING
         else:
             player.rect = pygame.Rect(player.x, player.y, player.image_size[0], player.image_size[1])
-            screen.blit(player.image, player.rect) # CHANGE TO STANDING
+            if not(down_pressed):
+                screen.blit(player.image, player.rect) # CHANGE TO STANDING
             jump_time_started = False
             if down_pressed:
-                screen.blit(player.image, player.rect) # CHANGE TO CROUCHING
+                screen.blit(player.crouching_image, player.rect_crouching) # CHANGE TO CROUCHING
 
     frames += 1
     
