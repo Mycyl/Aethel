@@ -4,6 +4,7 @@ from characters.enemy import Enemy
 import time
 import math
 from projectiles.bullet import Bullet
+from projectiles.obstacle import Obstacle
 from instructions.button_behavior.a_button import aButton
 from instructions.button_behavior.d_button import dButton
 from instructions.button_behavior.f_button import fButton
@@ -69,6 +70,7 @@ timer_started = False
 bullet_timer = 0
 
 bullets = []
+obstacles = []
 
 frames = 0
 player_collided = False
@@ -135,6 +137,22 @@ while run:
             timer_started = False
             player_collided = False
 
+
+        for obstacle in obstacles:
+
+            obstacle_collided = False
+
+            if obstacle.rect.colliderect(player.rect) and not(obstacle_collided):
+                player.hp -= 100
+                obstacle_collided = True
+
+            Obstacle.check_reached_coord_obstacle(obstacle)
+
+            if not(obstacle.reached_coord):
+                Obstacle.move_obstacle(obstacle)
+            else:
+                obstacles.pop(obstacles.index(obstacle))
+
         for bullet in bullets:
 
             bullet_collided = False 
@@ -163,9 +181,8 @@ while run:
             if not(bullet.reached_coord) and not(bullet_collided): # IF THE BULLET DID COLLIDE THEN WAIT A FEW SECONDS UNTIL SHOOTING THE NEXT
                 Bullet.move_bullet(bullet)
             else:
+                bullets.pop(bullets.index(bullet))
 
-                bullet_removed = bullets.pop(bullets.index(bullet))
-                 # NOT REMOVING THE OBJECT
 
         screen.blit(a_instruction.image, a_instruction.rect)
         screen.blit(d_instruction.image, d_instruction.rect)
@@ -185,6 +202,12 @@ while run:
                 bullets.append(Bullet((player.x, player.y), player.image_size, player.normalized_angle))
 
             landing_coordinate = my_font.render(f"{bullet.bullet_landing_coord}", True, (255, 255, 255))
+
+        if boss.phase_one:
+            obstacle_current_time = frames // 100
+            obstacle = Obstacle((boss.x, boss.y), boss.image_size)
+            if len(obstacles) < 1: # CHANGE THIS TO A TIME DIFFERENCE
+                obstacles.append(Obstacle((boss.x, boss.y), boss.image_size))
 
         cardinal_direction_display = my_font.render(f"NA: {player.normalized_angle}°", True, (255, 255, 255))
         if not(f_pressed): # Lock the direction, ONLY UPDATE THE FRAME WHEN MOVING
