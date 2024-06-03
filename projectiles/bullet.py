@@ -2,7 +2,7 @@ import pygame
 import math
 import random
 
-class Bullet:
+class Bullet: # SHOOTING SLOW
 
     def __init__(self, player_coords, player_image_size, theta):
         
@@ -15,7 +15,7 @@ class Bullet:
         self.y = player_coords[1] + player_image_size[1]/2 - self.image_size[1]/2 + random.randint(-10, 10)# DEVIATE THESE A LITTLE
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
         self.delta = 20
-        self.hypotenuse = 500
+        self.hypotenuse = 700
         self.bullet_landing_coord = (0, 0) #UPDATE
         self.player_coords = player_coords
 

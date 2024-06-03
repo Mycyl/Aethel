@@ -17,13 +17,6 @@ pygame.init()
 pygame.font.init()
 my_font = pygame.font.SysFont('Arial', 15)
 pygame.display.set_caption("Pygame")
-
-roll_num = []
-rolls = open("user_rolls", "r")
-for w in rolls:
-    roll_num.append(w.rstrip())
-rolls = roll_num[0]
-
 # set up variables for the display
 
 jumping = False
@@ -31,7 +24,7 @@ jumping = False
 size = (1200, 600)
 screen = pygame.display.set_mode(size)
 player = Player(200, 400, 300)
-boss = Enemy(700, 100, 10000)
+boss = Enemy(700, 100, 3000)
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
@@ -119,6 +112,10 @@ while run:
             run = False
 
     screen.fill((0, 0, 0))
+
+    # START SCREEN
+
+
     if started:
 
         current_time = frames // 100
@@ -148,7 +145,7 @@ while run:
 
             Obstacle.check_reached_coord_obstacle(obstacle)
 
-            if not(obstacle.reached_coord):
+            if not(obstacle.reached_coord) and not(obstacle.hp == 0):
                 Obstacle.move_obstacle(obstacle)
             else:
                 obstacles.pop(obstacles.index(obstacle))
@@ -172,6 +169,11 @@ while run:
                     boss.phase_three = True
 
                 bullet_collided = True
+
+            for obstacle in obstacles:
+                bullet_collided_with_obstacle = False
+                if bullet.rect.colliderect(obstacle.rect) and not(bullet_collided_with_obstacle):
+                    obstacle.hp -= 10
 
             Bullet.check_reached_coord(bullet)
             Bullet.calc_landing_coords(bullet)
@@ -201,7 +203,6 @@ while run:
             Bullet.calc_landing_coords(bullet)
             if len(bullets) < 1: # CONFIGURATE BULLET SPACING 
                 # NORMALIZE SHOOTING SPPED 
-                print(bullet_timer)
                 bullet_timer = frames // 100 # ONLY ADDING WHEN IT IS SHOT
                 bullets.append(Bullet((player.x, player.y), player.image_size, player.normalized_angle))
 
@@ -209,9 +210,9 @@ while run:
 
         if boss.phase_one:
             obstacle_current_time = frames // 100
-            obstacle = Obstacle((boss.x, boss.y), boss.image_size)
+            obstacle = Obstacle((boss.x, boss.y), boss.image_size, 50)
             if len(obstacles) < 1: # CHANGE THIS TO A TIME DIFFERENCE
-                obstacles.append(Obstacle((boss.x, boss.y), boss.image_size))
+                obstacles.append(Obstacle((boss.x, boss.y), boss.image_size, 50))
 
         cardinal_direction_display = my_font.render(f"NA: {player.normalized_angle}°", True, (255, 255, 255))
         if not(f_pressed): # Lock the direction, ONLY UPDATE THE FRAME WHEN MOVING
@@ -241,6 +242,7 @@ while run:
             if down_pressed:
                 screen.blit(player.crouching_image, player.rect_crouching) # CHANGE TO CROUCHING
 
+        print(boss.hp)
     frames += 1
     
     pygame.display.update()
