@@ -31,7 +31,7 @@ jumping = False
 size = (1200, 600)
 screen = pygame.display.set_mode(size)
 player = Player(200, 400, 300)
-boss = Enemy(700, 100, 100000)
+boss = Enemy(700, 100, 10000)
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
@@ -189,6 +189,10 @@ while run:
         screen.blit(f_instruction.image, f_instruction.rect)
         screen.blit(s_instruction.image, s_instruction.rect)
         screen.blit(space_instruction.image, space_instruction.rect)
+
+        for obstacle in obstacles:
+            screen.blit(obstacle.image, obstacle.rect)
+
         screen.blit(boss.image, boss.rect)
 
         if shooting:
