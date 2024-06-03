@@ -145,14 +145,13 @@ while run:
                     boss.hp -= 10
 
                 if boss.hp >= (2/3)*boss.starting_hp:
-                    phase_one = True
+                    boss.phase_one = True
                 elif boss.hp >= (1/3)*boss.starting_hp:
-                    phase_one = False
-                    phase_two = True
+                    boss.phase_one = False
+                    boss.phase_two = True
                 else:
-                    phase_one = False
-                    phase_two = False
-                    phase_three = True
+                    boss.phase_two = False
+                    boss.phase_three = True
 
                 bullet_collided = True
 
@@ -161,7 +160,7 @@ while run:
 
             bullet_current_time = frames // 100
 
-            if not(bullet.reached_coord) and not(bullet_collided):
+            if not(bullet.reached_coord) and not(bullet_collided): # IF THE BULLET DID COLLIDE THEN WAIT A FEW SECONDS UNTIL SHOOTING THE NEXT
                 Bullet.move_bullet(bullet)
             else:
 
@@ -179,7 +178,8 @@ while run:
             bullet_current_time = frames // 100
             bullet = Bullet((player.x, player.y), player.image_size, player.normalized_angle)
             Bullet.calc_landing_coords(bullet)
-            if len(bullets) < 1: # CONFIGURATE BULLET SPACING
+            if len(bullets) < 1: # CONFIGURATE BULLET SPACING 
+                # NORMALIZE SHOOTING SPPED 
                 print(bullet_timer)
                 bullet_timer = frames // 100 # ONLY ADDING WHEN IT IS SHOT
                 bullets.append(Bullet((player.x, player.y), player.image_size, player.normalized_angle))

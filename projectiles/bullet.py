@@ -102,5 +102,3 @@ class Bullet:
     def check_reached_coord(self):
         if self.reached_coord_x and self.reached_coord_y:
             self.reached_coord = True
-
-
