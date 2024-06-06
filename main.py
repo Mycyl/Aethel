@@ -88,9 +88,8 @@ while run:
     right_pressed = keys[pygame.K_d]
     space_pressed = keys[pygame.K_SPACE]
 
-    if space_pressed and not(started):
-        started = True
-    elif space_pressed and started:
+
+    if space_pressed and started:
         space_pressed = False
         jumping = True
 
@@ -109,6 +108,8 @@ while run:
             shooting = True
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             shooting = False
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1 and not(started) and card.rect.collidepoint(event.pos):
+            started = True
 
         if not(started):
             print()
@@ -119,10 +120,10 @@ while run:
     screen.fill((0, 0, 0))
 
     # START SCREEN
-
-    screen.blit(card.image, card.rect)
-    Card.hover(card)
-    Card.scale(card)
+    if not(started):
+        screen.blit(card.image, card.rect)
+        Card.hover(card)
+        Card.scale(card)
 
 
     if started:
