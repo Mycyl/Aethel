@@ -10,6 +10,7 @@ from instructions.button_behavior.d_button import dButton
 from instructions.button_behavior.f_button import fButton
 from instructions.button_behavior.s_button import sButton
 from instructions.button_behavior.space_button import spaceButton
+from card import Card
 
 
 # set up pygame modules
@@ -46,6 +47,7 @@ clock = pygame.time.Clock()
 player_coords = (0,0)
 theta = 0
 bullet = Bullet(player_coords, player.image_size, theta)
+card = Card((screen.get_width()/2), (screen.get_height()/2))
 shooting = False
 landing_coord = None
 landing_coordinate = my_font.render(f"{landing_coord}", True, (255, 255, 255))
@@ -108,6 +110,9 @@ while run:
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             shooting = False
 
+        if not(started):
+            print()
+
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
 
@@ -115,12 +120,23 @@ while run:
 
     # START SCREEN
 
+    screen.blit(card.image, card.rect)
+    Card.hover(card)
+    Card.scale(card)
+
 
     if started:
 
         current_time = frames // 100
 
-        
+        if boss.hp >= (2/3)*boss.starting_hp:
+            boss.phase_one = True
+        elif boss.hp >= (1/3)*boss.starting_hp:
+            boss.phase_one = False
+            boss.phase_two = True
+        else:
+            boss.phase_two = False
+            boss.phase_three = True
 
         if player.rect.colliderect(boss.rect) and not(player_collided):
             if not(timer_started):
@@ -159,14 +175,7 @@ while run:
                 if boss.hp > 0:
                     boss.hp -= 10
 
-                if boss.hp >= (2/3)*boss.starting_hp:
-                    boss.phase_one = True
-                elif boss.hp >= (1/3)*boss.starting_hp:
-                    boss.phase_one = False
-                    boss.phase_two = True
-                else:
-                    boss.phase_two = False
-                    boss.phase_three = True
+                
 
                 bullet_collided = True
 
