@@ -30,6 +30,7 @@ class Bullet: # SHOOTING SLOW
         self.adjacent = 0
         self.opposite = 0
 
+
     def calc_landing_coords(self): # self.bullet_landing_coord
 
         x_delta = self.hypotenuse*math.cos(self.theta * (math.pi/180)) - self.image_size[0]/2
@@ -102,3 +103,9 @@ class Bullet: # SHOOTING SLOW
     def check_reached_coord(self):
         if self.reached_coord_x and self.reached_coord_y:
             self.reached_coord = True
+
+    def rotate(self, theta):
+        self.rotated_image = pygame.transform.rotate(self.image, theta)
+        self.rotated_rect = self.image.get_rect()
+        self.rotated_rect.center = self.rect.center
+        return self.rotated_image, self.rotated_rect

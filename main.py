@@ -234,7 +234,8 @@ while run:
         screen.blit(landing_coordinate, (120, 20))
 
         for bullet in bullets:
-                screen.blit(bullet.image, bullet.rect)
+                rotated_image = pygame.transform.rotate(bullet.image, player.normalized_angle)
+                screen.blit(rotated_image, bullet.rect)
         
         if jumping: # JUMPING MECHANICS
             player.y -= y_velocity
