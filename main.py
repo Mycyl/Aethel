@@ -34,8 +34,8 @@ theta = 0
 theta_display = my_font.render(f"{theta}°", True, (255, 255, 255))
 cardinal_direction_display = my_font.render(f"{player.cardinal_direction_pointing}", True, (255, 255, 255))
 
-
-
+x_bound, y_bound = [0, screen.get_width() - player.image_size[0]], [0, screen.get_height() - player.image_size[1]]
+xy_recorded = False
 y_gravity = 0.5
 jump_height = 15
 jump_pause = 1 # second
@@ -121,12 +121,21 @@ while run:
 
     # START SCREEN
     if not(started):
+        screen.fill((255,255,255))
         screen.blit(card.image, card.rect)
-        Card.hover(card)
         Card.scale(card)
 
 
     if started:
+
+        if player.x <= x_bound[0]:
+            player.x = x_bound[0]
+        elif player.x >= x_bound[1]:
+            player.x = x_bound[1]
+        if player.y <= y_bound[0]:
+            player.y = y_bound[0]
+        elif player.y >= y_bound[1]:
+            player.y = y_bound[1]
 
         current_time = frames // 100
 
@@ -164,7 +173,13 @@ while run:
 
             if not(obstacle.reached_coord) and not(obstacle.hp == 0):
                 Obstacle.move_obstacle(obstacle)
+                xy_recorded = False
+
             else:
+                if not(xy_recorded) and obstacle.hp == 0:
+                    print(obstacle.x, obstacle.y) # Blit an explosion here
+                    xy_recorded = True
+
                 obstacles.pop(obstacles.index(obstacle))
 
         for bullet in bullets:
@@ -234,8 +249,7 @@ while run:
         screen.blit(landing_coordinate, (120, 20))
 
         for bullet in bullets:
-                rotated_image = pygame.transform.rotate(bullet.image, player.normalized_angle)
-                screen.blit(rotated_image, bullet.rect)
+                screen.blit(bullet.image, bullet.rect)
         
         if jumping: # JUMPING MECHANICS
             player.y -= y_velocity
@@ -253,7 +267,6 @@ while run:
             if down_pressed:
                 screen.blit(player.crouching_image, player.rect_crouching) # CHANGE TO CROUCHING
 
-        print(boss.hp)
     frames += 1
     
     pygame.display.update()
